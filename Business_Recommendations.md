@@ -1,6 +1,6 @@
 # Business Recommendations: Spotify Vibe Shift A/B Test
 
-**Ridham Patel** | January 2026
+**Sejal Khade** | January 2026
 
 ---
 
