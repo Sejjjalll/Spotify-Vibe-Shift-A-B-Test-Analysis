@@ -1,260 +1,255 @@
+````markdown
 # Spotify Vibe Shift: A/B Test Analysis
 
-**Sejal Khade** | Data Science Student | University Of Texas at Arlington  | May 2026
+**Sejal Khade** | MS Data Science Candidate | University of Texas at Arlington | May 2026
 
-A portfolio project analyzing whether recommending opposite music to users increases engagement and discovery on a music streaming platform.
+A product analytics project evaluating whether emotionally opposite music recommendations can increase user engagement and music discovery on a streaming platform.
 
-**Data Source:** [Spotify Dataset on Kaggle](https://www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs)
-
----
-
-## Quick Note About This Repo
-
-I built this entire project locally on my computer first (working through the analysis over winter break), so that's why there's one big commit uploading everything at once. I know it's not the best git practice - normally you'd want to commit as you go - but I didn't think to initialize a GitHub repo until I finished and wanted to add it to my portfolio. 
+**Data Source:** Spotify Dataset from Kaggle
 
 ---
 
-## What This Project Is About
+## Project Overview
 
-For one of my portfolio projects, I wanted to explore A/B testing and experimental design. I came up with the idea of testing a Vibe Shift feature for a music streaming platform that recommends songs that are emotionally opposite to what you normally listen to.
+Music streaming platforms continuously balance personalization with discovery. While recommendation systems are highly effective at serving familiar content, excessive personalization can reduce exploration and limit user engagement over time.
 
-The hypothesis: pushing users outside their comfort zones would increase music discovery and engagement.
-
----
-
-## The Question I Wanted to Answer
-
-Does recommending music that's opposite to users' current taste increase engagement?
-
-And more specifically - does it work the same for all users, or are there differences based on how diverse their music taste already is?
+This project evaluates a hypothetical feature called **Vibe Shift**, which recommends songs that are emotionally opposite to a user's typical listening preferences. Using user segmentation, experimental design principles, and statistical analysis, the project investigates whether strategic disruption can improve engagement while maintaining a positive user experience.
 
 ---
 
-## What I Did
+## Business Objective
 
-### 1. Data Cleaning & Preparation
-Started with a Spotify dataset from Kaggle (~32k songs across different playlists). Cleaned it up, removed duplicates, handled missing values.
+Determine whether opposite-vibe recommendations increase user engagement compared with standard recommendations and identify which user segments benefit most from the intervention.
 
-### 2. Exploratory Data Analysis
-- Analyzed audio features (valence, energy, danceability, etc.)
-- Decided to focus on just valence (happy/sad) and energy (energetic/calm) since they're the most emotionally meaningful
-- Created comfort zone scores based on how diverse each user's listening history is
-- Used K-means clustering to segment users into three groups: Narrow, Moderate, and Wide comfort zones
+### Key Questions
 
-### 3. Experiment Design & Simulation
-Since I don't have access to actual user data or the ability to run a real A/B test, I simulated one:
-- Randomly assigned users to Control (normal recommendations) vs Treatment (opposite recommendations)
-- Used stratified sampling to balance segments across both groups
-- Simulated realistic engagement patterns based on user segments
-- Created guardrail metrics to catch potential violations
-
-### 4. Statistical Analysis
-- T-tests to check significance
-- Cohen's d for effect sizes 
-- Confidence intervals
-- Segmented analysis to see heterogeneous treatment effects
+- Does Vibe Shift increase engagement?
+- Which users respond positively to opposite recommendations?
+- Are there user segments where the feature creates negative experiences?
+- Should the feature be launched universally or selectively?
 
 ---
 
 ## Key Findings
 
-**TL;DR:** The feature works really well for some users, not at all for others.
-
 ### Overall Result
-+9.7% engagement increase (p<0.001) - highly significant!
 
-But when you break it down by user segment, the story gets more interesting:
+The treatment group demonstrated a **9.7% increase in engagement** compared with the control group.
 
-### By User Segment
+**Result:** Statistically significant (p < 0.001)
 
-**Moderate Comfort Zone Users: Winner**
-- +11.9% engagement (p<0.001)
-- Medium effect size (Cohen's d = 0.52)
-- Guardrails passed (skip rate acceptable)
-- **Recommendation: Launch for this segment**
+However, aggregate results masked substantial differences across user segments.
 
-**Narrow Comfort Zone Users: Problem**
-- +10.1% engagement (barely significant, p=0.03)
-- BUT skip rate violated guardrail (+11.9pp increase)
-- Users are skipping almost half their recommendations
-- **Recommendation: Launch strategically**
+### Moderate Comfort Zone Users
 
-**Wide Comfort Zone Users: No Effect**
-- +6.0% lift but not significant (p=0.13)
-- Makes sense - they're already exploring
-- **Recommendation: Don't launch - no benefit**
+**Best-performing segment**
 
-### The Surprising Part
+- +11.9% engagement lift
+- p < 0.001
+- Cohen's d = 0.52
+- Guardrails passed
 
-I honestly thought users with the narrowest taste (Narrow segment) would benefit most since they're the most stuck. But the data showed they need a gentler push, not maximum disruption. The Moderate users are the sweet spot.
+**Recommendation:** Launch feature for this segment.
 
-This is what we learned about in my ML class as heterogeneous treatment effects - same intervention, different outcomes for different groups.
+### Narrow Comfort Zone Users
 
----
+- +10.1% engagement lift
+- Marginal statistical significance
+- Skip-rate guardrail violation (+11.9 percentage points)
 
-## What I'd Actually Recommend
+Users showed increased exploration but also demonstrated resistance to highly disruptive recommendations.
 
-After running the analysis, here's what I think should happen:
+**Recommendation:** Test modified versions before launch.
 
-**Launch for Moderate users with full-opposite recommendations.** They showed +11.9% engagement (p<0.001), medium effect size, and all guardrails passed. They're the sweet spot - stuck enough to benefit from disruption but not so stuck that it feels jarring.
+Potential follow-up experiments:
 
-**Don't launch for Narrow users yet - but don't give up on them either.** The full-opposite approach failed the skip rate guardrail (+11.9pp increase), but they showed the highest discovery increase at +12.9%. So they are willing to explore, we're just pushing too hard. I'd test three adapted approaches:
-- **Gradual shift:** Ease them in with 25% → 40% → 60% → 80% over multiple weeks
-- **Genre constraint:** Keep genre familiar but shift emotions (high-energy rap → sad/calm rap)
+- Gradual recommendation shifts
+- Genre-preserving emotional shifts
+- User-controlled discovery mode
 
-- **User toggle:** Adventure Mode that they control for both Moderate and Narrow users in case they want to switch back to their old patterns.
+### Wide Comfort Zone Users
 
-My bet is gradual shift works, but needs testing.
+- +6.0% engagement lift
+- Not statistically significant (p = 0.13)
 
-**Skip Wide users entirely.** No significant effect (p=0.13) - they're already exploring on their own.
+These users already explore broadly and showed limited incremental benefit.
 
-This is a example of heterogeneous treatment effects from my ML course - same feature, totally different outcomes depending on who uses it.
-
-**[Full Business Recommendations & Analysis →](Business_Recommendations.md)**
+**Recommendation:** Do not launch for this segment.
 
 ---
 
-## Technical Details
+## Business Recommendations
 
-**Tools Used:**
-- Python (pandas, numpy, scipy, matplotlib, seaborn, sklearn)
-- Jupyter Notebooks
-- Statistical testing (t-tests, effect sizes, confidence intervals)
-- K-means clustering for segmentation
+### Immediate Launch
 
-**Methods:**
-- Stratified random assignment for A/B test
-- Two-sample t-tests for significance
-- Cohen's d for effect size measurement
-- Guardrail metrics to prevent shipping bad UX
+Deploy Vibe Shift for Moderate Comfort Zone Users.
 
-**Dataset:**
-- Source: Kaggle Spotify dataset
-- ~32k songs after cleaning
+This segment demonstrated the strongest combination of:
+
+- Engagement improvement
+- Meaningful effect size
+- Positive user experience metrics
+
+### Additional Testing
+
+Conduct follow-up experiments for Narrow Comfort Zone Users using less disruptive recommendation strategies.
+
+### No Launch
+
+Exclude Wide Comfort Zone Users because the feature produced no statistically significant improvement.
+
+The findings highlight a classic example of heterogeneous treatment effects: the same intervention generates different outcomes depending on user characteristics.
+
+For detailed recommendations, see:
+
+**Business_Recommendations.md**
+
+---
+
+## Methodology
+
+### Data Preparation
+
+- Cleaned and processed approximately 32,000 Spotify tracks
+- Removed duplicates and handled missing values
+- Standardized audio features for analysis
+
+### Exploratory Analysis
+
+Analyzed Spotify audio features including:
+
+- Valence
+- Energy
+- Danceability
+- Acousticness
+- Speechiness
+
+Valence and energy were selected as the primary emotional dimensions for defining listening behavior and recommendation shifts.
+
+### User Segmentation
+
+Created listening diversity scores and segmented users using K-Means clustering into:
+
+- Narrow Comfort Zone Users
+- Moderate Comfort Zone Users
+- Wide Comfort Zone Users
+
+### Experimental Design
+
+A simulated A/B test was developed to mimic a real-world product experiment.
+
+**Control Group**
+- Users receive standard recommendations aligned with existing preferences.
+
+**Treatment Group**
+- Users receive recommendations with emotional characteristics opposite to their typical listening patterns.
+
+**Experiment Controls**
+- Stratified random assignment
+- Balanced user segments across groups
+- Guardrail metrics for user experience monitoring
+
+---
+
+## Statistical Analysis
+
+The experiment was evaluated using:
+
+- Two-sample t-tests
+- Confidence intervals
+- Cohen's d effect sizes
+- Segment-level treatment effect analysis
+- Guardrail metric evaluation
+
+---
+
+## Tools & Technologies
+
+- Python
+- Pandas
+- NumPy
+- SciPy
+- Scikit-Learn
+- Matplotlib
+- Seaborn
+- Jupyter Notebook
+
+---
+
+## Dataset
+
+- Source: Kaggle Spotify Dataset
+- Approximately 32,000 songs
 - 470 playlists treated as unique users
-- Features: valence, energy, acousticness, etc.
+- Audio features including valence, energy, danceability, acousticness, and speechiness
 
 ---
 
 ## Repository Structure
 
-```
+```text
 ├── notebooks/
-│   ├── 1_Data_Cleaning.ipynb          # ETL and data prep
-│   ├── 2_EDA.ipynb                    # Exploration and segmentation
-│   ├── 3_Experiment.ipynb             # A/B test simulation
-│   └── 4_Stat_Test.ipynb              # Statistical analysis
+│   ├── 1_Data_Cleaning.ipynb
+│   ├── 2_EDA.ipynb
+│   ├── 3_Experiment.ipynb
+│   └── 4_Stat_Test.ipynb
 ├── data/
-│   └── (data files - not included, download from Kaggle)
-├── Business_Recommendations.md         # Main deliverable
-└── README.md                          # You are here
+├── Business_Recommendations.md
+└── README.md
+````
+
+## Running the Project
+
+### 1. Download Dataset
+
+Download the Spotify dataset from Kaggle and place it in the `data/` folder.
+
+### 2. Install Dependencies
+
+```bash
+pip install pandas numpy scipy matplotlib seaborn scikit-learn jupyter
 ```
 
-**Note:** I didn't include the data files since they're large and from Kaggle. If you want to run this yourself, download the Spotify dataset from Kaggle and put it in the data folder.
+### 3. Execute Notebooks
+
+Run notebooks in the following order:
+
+1. Data Cleaning
+2. Exploratory Data Analysis
+3. Experiment Simulation
+4. Statistical Testing
 
 ---
 
-## What I Learned
+## Limitations
 
-### Technical Skills
-- How to design and simulate an A/B test properly
-- Stratified sampling and why it matters
-- Effect sizes vs statistical significance (both matter!)
-- Why guardrail metrics are crucial
-- K-means clustering for user segmentation
+This project uses simulated treatment effects to demonstrate experimentation, product analytics, and statistical inference workflows.
 
-### Analytical Thinking
-- One size doesn't fit all - segment your users
-- Your hypothesis can be wrong 
-- Stuck users ≠ ready to change users
-- Discovery alone doesn't guarantee engagement
-- Guardrails prevent you from shipping something that technically works but users hate
+In a production environment, a real implementation would include:
 
-### Things I'd Do Differently
-- Start the GitHub repo from the beginning instead of one big commit at the end
-- Would love to run this on actual user data if I get access to it
-- Could explore more sophisticated segmentation methods
-- Maybe test different shift intensities instead of just full opposite
+* Live A/B testing
+* Longitudinal retention analysis
+* User research and feedback collection
+* Revenue and lifetime-value impact measurement
+* Controlled rollout strategies
 
 ---
 
-## Running the Notebooks
+## Future Enhancements
 
-If you want to run these yourself:
-
-1. **Get the data:**
-   - Download Spotify dataset from Kaggle
-   - Place in `data/` folder
-
-2. **Install dependencies:**
-   ```bash
-   pip install pandas numpy scipy matplotlib seaborn scikit-learn jupyter
-   ```
-
-3. **Run notebooks in order:**
-   - Start with `1_Data_Cleaning.ipynb`
-   - Then `2_EDA.ipynb`
-   - Then `3_Experiment.ipynb`
-   - Finally `4_Stat_Test.ipynb`
-
-4. **Check the recommendations:**
-   - Read `Business_Recommendations.md` for the full analysis and recommendations
-
----
-
-## Limitations & Context
-
-**Important:** This is a portfolio project using simulated treatment effects. I created realistic data to demonstrate experimental design and analysis skills, but in a real setting you'd:
-- Run an actual A/B test with real users
-- Track long-term effects (retention, lifetime value)
-- Have product/UX researchers interview users
-- Test in pilot markets first
-
-Also, I made some simplifying assumptions (like treating each playlist as one user) that wouldn't hold in production but work fine for demonstration purposes.
-
----
-
-## Future Work / Ideas
-
-If I had more time or was actually implementing this:
-
-- **Test "softer" versions for Narrow users** - Instead of full opposite recommendations, try a 30-40% shift
-- **Personalized shift intensity** - Adapt the opposite-ness based on user response over time
-- **Long-term retention analysis** - Does the engagement boost actually lead to better retention?
-- **Cross-platform behavior** - Do people respond differently on mobile vs desktop?
-- **Add user research** - Interview users about their experience, not just look at metrics
-
----
-
-## Why I Built This
-
-I wanted to demonstrate end-to-end A/B test analysis for my portfolio, but I also genuinely think this is an interesting product idea. Music discovery is hard - people get stuck in what they know. But forcing random recommendations doesn't work either (see: Narrow users violating skip rate).
-
-The targeted approach (launch for the right users only) is more complex but shows you're thinking about product-market fit even within your existing user base. That's the kind of nuanced thinking I'm trying to develop as I learn more about data science and product analytics.
-
----
-
-## Coursework Connection
-
-This project applies concepts from:
-- **DASC 5302:** Hypothesis testing, t-tests, confidence intervals
-- **DASC 5304:** Machine Learning (K-means, effect sizes, experimental design)
-- **Data Science Projects course:** End-to-end analysis workflow
-
-It's cool to see how stuff from different classes comes together in a real(ish) project.
+* Personalized recommendation-shift intensity
+* Long-term retention analysis
+* Adaptive experimentation frameworks
+* User-level response modeling
+* Additional behavioral segmentation techniques
 
 ---
 
 ## Contact
 
-If you have questions about the analysis or want to discuss the project, feel free to reach out!
+**Email:** [ssk8336@mavs.uta.edu](mailto:ssk8336@mavs.uta.edu)
 
-**Email:** ssk8336@mavs.uta.edu
+**LinkedIn:** linkedin.com/in/sejallk
 
-**LinkedIn:** https://www.linkedin.com/in/sejallk
-
----
-
-**Last Updated:** January 2026
-
-*Built this over Winter break as a portfolio project. Hope it's useful to see how A/B testing and experimental design work in practice!*
+```
+```
