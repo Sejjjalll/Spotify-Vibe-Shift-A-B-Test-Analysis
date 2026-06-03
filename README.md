@@ -1,4 +1,4 @@
-````markdown
+
 # Spotify Vibe Shift: A/B Test Analysis
 
 **Sejal Khade** | MS Data Science Candidate | University of Texas at Arlington | May 2026
